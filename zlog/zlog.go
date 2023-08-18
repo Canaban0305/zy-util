@@ -3,6 +3,7 @@ package zlog
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/zhiyunai/zy-util/dc"
 	"golang.org/x/exp/slog"
 	"io"
 	"io/ioutil"
@@ -10,7 +11,6 @@ import (
 	"net/http"
 	"strings"
 	"time"
-	"zy-util/dc"
 )
 
 var (
