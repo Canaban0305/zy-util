@@ -59,7 +59,7 @@ func New(config *Config) *ZLog {
 
 func (z *ZLog) Info(a ...any) {
 	msg := z.getAnyString(a)
-	printf("[INFO]", msg)
+	printf("info", msg)
 	if !_config.IsUpload {
 		return
 	}
@@ -70,7 +70,7 @@ func (z *ZLog) Info(a ...any) {
 		Content:   msg,
 		Project:   _config.ServerName,
 		Version:   _config.Version,
-		Level:     "INFO",
+		Level:     "info",
 		TimeStamp: time.Now().Format("2006/01/02 15:04:05"),
 	}
 	arr = append(arr, param)
@@ -80,7 +80,7 @@ func (z *ZLog) Info(a ...any) {
 
 func (z *ZLog) Debug(a ...any) {
 	msg := z.getAnyString(a)
-	printf("DEBUG", msg)
+	printf("debug", msg)
 	if !_config.IsUpload {
 		return
 	}
@@ -91,7 +91,7 @@ func (z *ZLog) Debug(a ...any) {
 		Content:   msg,
 		Project:   _config.ServerName,
 		Version:   _config.Version,
-		Level:     "DEBUG",
+		Level:     "debug",
 		TimeStamp: time.Now().Format("2006/01/02 15:04:05"),
 	}
 	arr = append(arr, param)
@@ -101,7 +101,7 @@ func (z *ZLog) Debug(a ...any) {
 
 func (z *ZLog) Warn(a ...any) {
 	msg := z.getAnyString(a)
-	printf("[WARN]", msg)
+	printf("warn", msg)
 	if !_config.IsUpload {
 		return
 	}
@@ -112,7 +112,7 @@ func (z *ZLog) Warn(a ...any) {
 		Content:   msg,
 		Project:   _config.ServerName,
 		Version:   _config.Version,
-		Level:     "WARN",
+		Level:     "warn",
 		TimeStamp: time.Now().Format("2006/01/02 15:04:05"),
 	}
 	arr = append(arr, param)
@@ -122,7 +122,7 @@ func (z *ZLog) Warn(a ...any) {
 
 func (z *ZLog) Error(a ...any) {
 	msg := z.getAnyString(a)
-	printf("[ERROR]", msg)
+	printf("error", msg)
 	if !_config.IsUpload {
 		return
 	}
@@ -133,7 +133,7 @@ func (z *ZLog) Error(a ...any) {
 		Content:   msg,
 		Project:   _config.ServerName,
 		Version:   _config.Version,
-		Level:     "ERROR",
+		Level:     "error",
 		TimeStamp: time.Now().Format("2006/01/02 15:04:05"),
 	}
 	arr = append(arr, param)
