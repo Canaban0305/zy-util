@@ -27,6 +27,7 @@ type Config struct {
 	Version    string // 应用版本
 	ConsoleLog bool   // 是否打印到控制台
 	IsUpload   bool   // 是否上传
+	RunMode    string // 运行环境
 }
 
 // Message Open-observe 实体
@@ -39,6 +40,7 @@ type Message struct {
 	DateTime       string `json:"datetime"`
 	GOOS           string `json:"goos"`
 	GOARCH         string `json:"goarch"`
+	RunMode        string `json:"run_mode"`
 }
 
 // New 创建 zlog 实例
@@ -71,8 +73,9 @@ func (z *ZLog) Info(a ...interface{}) {
 		ProjectVersion: _config.Version,
 		GOOS:           runtime.GOOS,
 		GOARCH:         runtime.GOARCH,
+		RunMode:        _config.RunMode,
 		Level:          "info",
-		DateTime:       time.Now().Format("2006/01/02 15:04:05"),
+		DateTime:       time.Now().Format("2006-01-02 15:04:05"),
 	}
 	arr = append(arr, param)
 
@@ -94,8 +97,9 @@ func (z *ZLog) Debug(a ...interface{}) {
 		ProjectVersion: _config.Version,
 		GOOS:           runtime.GOOS,
 		GOARCH:         runtime.GOARCH,
+		RunMode:        _config.RunMode,
 		Level:          "debug",
-		DateTime:       time.Now().Format("2006/01/02 15:04:05"),
+		DateTime:       time.Now().Format("2006-01-02 15:04:05"),
 	}
 	arr = append(arr, param)
 
@@ -117,8 +121,9 @@ func (z *ZLog) Warn(a ...interface{}) {
 		ProjectVersion: _config.Version,
 		GOOS:           runtime.GOOS,
 		GOARCH:         runtime.GOARCH,
+		RunMode:        _config.RunMode,
 		Level:          "warn",
-		DateTime:       time.Now().Format("2006/01/02 15:04:05"),
+		DateTime:       time.Now().Format("2006-01-02 15:04:05"),
 	}
 	arr = append(arr, param)
 
@@ -140,8 +145,9 @@ func (z *ZLog) Error(a ...interface{}) {
 		ProjectVersion: _config.Version,
 		GOOS:           runtime.GOOS,
 		GOARCH:         runtime.GOARCH,
+		RunMode:        _config.RunMode,
 		Level:          "error",
-		DateTime:       time.Now().Format("2006/01/02 15:04:05"),
+		DateTime:       time.Now().Format("2006-01-02 15:04:05"),
 	}
 	arr = append(arr, param)
 
