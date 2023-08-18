@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/zhiyunai/zy-util/dc"
-	"golang.org/x/exp/slog"
 	"io"
 	"io/ioutil"
 	"log"
@@ -19,9 +18,9 @@ var (
 )
 
 type ZLog struct {
-	log *slog.Logger
 }
 
+// Config 配置项
 type Config struct {
 	ServerName string // 应用名称(openobserve 仓库名)
 	Version    string // 应用版本
@@ -29,6 +28,7 @@ type Config struct {
 	IsUpload   bool   // 是否上传
 }
 
+// Message Open-observe 实体
 type Message struct {
 	Project   string `json:"project"`
 	Version   string `json:"version"`
@@ -37,10 +37,6 @@ type Message struct {
 	IP        string `json:"ip"`
 	TimeStamp string `json:"timestamp"`
 }
-
-// region config
-
-// endregion
 
 // New 创建 zlog 实例
 func New(config *Config) *ZLog {
@@ -57,7 +53,7 @@ func New(config *Config) *ZLog {
 	return &ZLog{}
 }
 
-func (z *ZLog) Info(a ...any) {
+func (z *ZLog) Info(a ...interface{}) {
 	msg := z.getAnyString(a)
 	printf("info", msg)
 	if !_config.IsUpload {
@@ -78,7 +74,7 @@ func (z *ZLog) Info(a ...any) {
 	post(logUrl, arr)
 }
 
-func (z *ZLog) Debug(a ...any) {
+func (z *ZLog) Debug(a ...interface{}) {
 	msg := z.getAnyString(a)
 	printf("debug", msg)
 	if !_config.IsUpload {
@@ -99,7 +95,7 @@ func (z *ZLog) Debug(a ...any) {
 	post(logUrl, arr)
 }
 
-func (z *ZLog) Warn(a ...any) {
+func (z *ZLog) Warn(a ...interface{}) {
 	msg := z.getAnyString(a)
 	printf("warn", msg)
 	if !_config.IsUpload {
@@ -120,7 +116,7 @@ func (z *ZLog) Warn(a ...any) {
 	post(logUrl, arr)
 }
 
-func (z *ZLog) Error(a ...any) {
+func (z *ZLog) Error(a ...interface{}) {
 	msg := z.getAnyString(a)
 	printf("error", msg)
 	if !_config.IsUpload {
@@ -141,13 +137,17 @@ func (z *ZLog) Error(a ...any) {
 	post(logUrl, arr)
 }
 
-func (z *ZLog) getAnyString(a ...any) string {
+func (z *ZLog) getAnyString(a ...interface{}) string {
 	str := ""
-	for argNum, arg := range a {
-		if argNum > 0 {
-			str += " "
+
+	for _, arg := range a {
+		for i2, arg2 := range arg.([]interface{}) {
+			if i2 > 0 {
+				str += " "
+			}
+
+			str += fmt.Sprintf("%v", arg2)
 		}
-		str += fmt.Sprintf("%v", arg)
 	}
 
 	return str
@@ -196,7 +196,7 @@ func post(url string, data interface{}) {
 	return
 }
 
-func printf(a ...any) {
+func printf(a ...interface{}) {
 	if _config.ConsoleLog {
 		fmt.Println(a)
 	}
