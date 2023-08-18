@@ -14,93 +14,143 @@ import (
 )
 
 var (
-	ServerName = "ZLog"  // ServerName 应用名称
-	Version    = "1.0.0" // Version 应用版本
-	LogsUrl    = "http://logs.zhiyunai.com.cn/api/default/%s/_json"
+	logUrl  = "http://logs.zhiyunai.com.cn/api/default/%s/_json"
+	_config *Config // 配置项
 )
 
 type ZLog struct {
 	log *slog.Logger
 }
 
-type Message struct {
-	Project string `json:"project,omitempty"`
-	Version string `json:"version,omitempty"`
-	Content string `json:"content,omitempty"`
-	Level   string `json:"level,omitempty"`
-	IP      string `json:"IP,omitempty"`
+type Config struct {
+	ServerName string // 应用名称(openobserve 仓库名)
+	Version    string // 应用版本
+	ConsoleLog bool   // 是否打印到控制台
+	IsUpload   bool   // 是否上传
 }
 
+type Message struct {
+	Project   string `json:"project"`
+	Version   string `json:"version"`
+	Content   string `json:"content"`
+	Level     string `json:"level"`
+	IP        string `json:"ip"`
+	TimeStamp string `json:"timestamp"`
+}
+
+// region config
+
+// endregion
+
 // New 创建 zlog 实例
-func New(serverName, ver string) *ZLog {
-	ServerName = serverName
-	Version = ver
-	LogsUrl = fmt.Sprintf(LogsUrl, ServerName)
+func New(config *Config) *ZLog {
+	if config == nil {
+		log.Fatal("zlog must has config.")
+	}
+
+	_config = config
+	if _config.ServerName == "" {
+		_config.ServerName = "default"
+	}
+
+	logUrl = fmt.Sprintf(logUrl, _config.ServerName)
 	return &ZLog{}
 }
 
-func (z *ZLog) Info(msg string) {
-	log.Println(time.Now().Format("2006-01-02 15:04:05"), "[INFO]", msg)
+func (z *ZLog) Info(a ...any) {
+	msg := z.getAnyString(a)
+	printf("[INFO]", msg)
+	if !_config.IsUpload {
+		return
+	}
 	ip := dc.GetIP()
 	arr := make([]Message, 0)
 	param := Message{
-		IP:      ip,
-		Content: msg,
-		Project: ServerName,
-		Version: Version,
-		Level:   "INFO",
+		IP:        ip,
+		Content:   msg,
+		Project:   _config.ServerName,
+		Version:   _config.Version,
+		Level:     "INFO",
+		TimeStamp: time.Now().Format("2006/01/02 15:04:05"),
 	}
 	arr = append(arr, param)
 
-	post(LogsUrl, arr)
+	post(logUrl, arr)
 }
 
-func (z *ZLog) Debug(msg string) {
-	log.Println(time.Now().Format("2006-01-02 15:04:05"), "[DEBUG]", msg)
+func (z *ZLog) Debug(a ...any) {
+	msg := z.getAnyString(a)
+	printf("DEBUG", msg)
+	if !_config.IsUpload {
+		return
+	}
 	ip := dc.GetIP()
 	arr := make([]Message, 0)
 	param := Message{
-		IP:      ip,
-		Content: msg,
-		Project: ServerName,
-		Version: Version,
-		Level:   "DEBUG",
+		IP:        ip,
+		Content:   msg,
+		Project:   _config.ServerName,
+		Version:   _config.Version,
+		Level:     "DEBUG",
+		TimeStamp: time.Now().Format("2006/01/02 15:04:05"),
 	}
 	arr = append(arr, param)
 
-	post(LogsUrl, arr)
+	post(logUrl, arr)
 }
 
-func (z *ZLog) Warn(msg string) {
-	log.Println(time.Now().Format("2006-01-02 15:04:05"), "[WARN]", msg)
+func (z *ZLog) Warn(a ...any) {
+	msg := z.getAnyString(a)
+	printf("[WARN]", msg)
+	if !_config.IsUpload {
+		return
+	}
 	ip := dc.GetIP()
 	arr := make([]Message, 0)
 	param := Message{
-		IP:      ip,
-		Content: msg,
-		Project: ServerName,
-		Version: Version,
-		Level:   "WARN",
+		IP:        ip,
+		Content:   msg,
+		Project:   _config.ServerName,
+		Version:   _config.Version,
+		Level:     "WARN",
+		TimeStamp: time.Now().Format("2006/01/02 15:04:05"),
 	}
 	arr = append(arr, param)
 
-	post(LogsUrl, arr)
+	post(logUrl, arr)
 }
 
-func (z *ZLog) Error(msg string) {
-	log.Println(time.Now().Format("2006-01-02 15:04:05"), "[ERROR]", msg)
+func (z *ZLog) Error(a ...any) {
+	msg := z.getAnyString(a)
+	printf("[ERROR]", msg)
+	if !_config.IsUpload {
+		return
+	}
 	ip := dc.GetIP()
 	arr := make([]Message, 0)
 	param := Message{
-		IP:      ip,
-		Content: msg,
-		Project: ServerName,
-		Version: Version,
-		Level:   "ERROR",
+		IP:        ip,
+		Content:   msg,
+		Project:   _config.ServerName,
+		Version:   _config.Version,
+		Level:     "ERROR",
+		TimeStamp: time.Now().Format("2006/01/02 15:04:05"),
 	}
 	arr = append(arr, param)
 
-	post(LogsUrl, arr)
+	post(logUrl, arr)
+}
+
+func (z *ZLog) getAnyString(a ...any) string {
+	str := ""
+	for argNum, arg := range a {
+		if argNum > 0 {
+			str += " "
+		}
+		str += fmt.Sprintf("%v", arg)
+	}
+
+	return str
 }
 
 // post HttpPost
@@ -136,12 +186,18 @@ func post(url string, data interface{}) {
 		}
 	}(res.Body)
 
-	body, err := ioutil.ReadAll(res.Body)
+	_, err = ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(string(body))
+	//fmt.Println(string(body))
 
 	return
+}
+
+func printf(a ...any) {
+	if _config.ConsoleLog {
+		fmt.Println(a)
+	}
 }

@@ -12,9 +12,14 @@ func GetIP() string {
 		fmt.Println("get ip", err)
 	}
 
-	defer conn.Close()
+	defer func(conn net.Conn) {
+		err := conn.Close()
+		if err != nil {
+
+		}
+	}(conn)
 
 	ipAddress := conn.LocalAddr().(*net.UDPAddr)
-	fmt.Println("get ip", ipAddress)
+	//fmt.Println("get ip", ipAddress)
 	return ipAddress.IP.String()
 }
