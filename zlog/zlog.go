@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -30,12 +31,14 @@ type Config struct {
 
 // Message Open-observe 实体
 type Message struct {
-	Project   string `json:"project"`
-	Version   string `json:"version"`
-	Content   string `json:"content"`
-	Level     string `json:"level"`
-	IP        string `json:"ip"`
-	TimeStamp string `json:"timestamp"`
+	Project        string `json:"project"`
+	ProjectVersion string `json:"project_version"`
+	Content        string `json:"content"`
+	Level          string `json:"level"`
+	IP             string `json:"ip"`
+	DateTime       string `json:"datetime"`
+	GOOS           string `json:"goos"`
+	GOARCH         string `json:"goarch"`
 }
 
 // New 创建 zlog 实例
@@ -62,12 +65,14 @@ func (z *ZLog) Info(a ...interface{}) {
 	ip := dc.GetIP()
 	arr := make([]Message, 0)
 	param := Message{
-		IP:        ip,
-		Content:   msg,
-		Project:   _config.ServerName,
-		Version:   _config.Version,
-		Level:     "info",
-		TimeStamp: time.Now().Format("2006/01/02 15:04:05"),
+		IP:             ip,
+		Content:        msg,
+		Project:        _config.ServerName,
+		ProjectVersion: _config.Version,
+		GOOS:           runtime.GOOS,
+		GOARCH:         runtime.GOARCH,
+		Level:          "info",
+		DateTime:       time.Now().Format("2006/01/02 15:04:05"),
 	}
 	arr = append(arr, param)
 
@@ -83,12 +88,14 @@ func (z *ZLog) Debug(a ...interface{}) {
 	ip := dc.GetIP()
 	arr := make([]Message, 0)
 	param := Message{
-		IP:        ip,
-		Content:   msg,
-		Project:   _config.ServerName,
-		Version:   _config.Version,
-		Level:     "debug",
-		TimeStamp: time.Now().Format("2006/01/02 15:04:05"),
+		IP:             ip,
+		Content:        msg,
+		Project:        _config.ServerName,
+		ProjectVersion: _config.Version,
+		GOOS:           runtime.GOOS,
+		GOARCH:         runtime.GOARCH,
+		Level:          "debug",
+		DateTime:       time.Now().Format("2006/01/02 15:04:05"),
 	}
 	arr = append(arr, param)
 
@@ -104,12 +111,14 @@ func (z *ZLog) Warn(a ...interface{}) {
 	ip := dc.GetIP()
 	arr := make([]Message, 0)
 	param := Message{
-		IP:        ip,
-		Content:   msg,
-		Project:   _config.ServerName,
-		Version:   _config.Version,
-		Level:     "warn",
-		TimeStamp: time.Now().Format("2006/01/02 15:04:05"),
+		IP:             ip,
+		Content:        msg,
+		Project:        _config.ServerName,
+		ProjectVersion: _config.Version,
+		GOOS:           runtime.GOOS,
+		GOARCH:         runtime.GOARCH,
+		Level:          "warn",
+		DateTime:       time.Now().Format("2006/01/02 15:04:05"),
 	}
 	arr = append(arr, param)
 
@@ -125,12 +134,14 @@ func (z *ZLog) Error(a ...interface{}) {
 	ip := dc.GetIP()
 	arr := make([]Message, 0)
 	param := Message{
-		IP:        ip,
-		Content:   msg,
-		Project:   _config.ServerName,
-		Version:   _config.Version,
-		Level:     "error",
-		TimeStamp: time.Now().Format("2006/01/02 15:04:05"),
+		IP:             ip,
+		Content:        msg,
+		Project:        _config.ServerName,
+		ProjectVersion: _config.Version,
+		GOOS:           runtime.GOOS,
+		GOARCH:         runtime.GOARCH,
+		Level:          "error",
+		DateTime:       time.Now().Format("2006/01/02 15:04:05"),
 	}
 	arr = append(arr, param)
 
